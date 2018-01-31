@@ -15,10 +15,16 @@
  */
 package com.example.android.implicitintents;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
+
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,8 +44,10 @@ public class MainActivity extends AppCompatActivity {
         // TODO (5) Create a String that contains a URL ( make sure it starts with http:// or https:// )
 
         // TODO (6) Replace the Toast with a call to openWebPage, passing in the URL String from the previous step
-        Toast.makeText(this, "TODO: Open a web page when this button is clicked", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "TODO: Open a web page when this button is clicked", Toast.LENGTH_SHORT).show();
+        openWebpage("http://www.google.com");
     }
+
 
     /**
      * This method is called when the Open Location in Map button is clicked. It will open the
@@ -48,7 +56,17 @@ public class MainActivity extends AppCompatActivity {
      * @param v Button that was clicked.
      */
     public void onClickOpenAddressButton(View v) {
-        Toast.makeText(this, "TODO: Open a map when this button is clicked", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "TODO: Open a map when this button is clicked", Toast.LENGTH_SHORT).show();
+        Uri geo = Uri.parse("geo:0,0?q=3961+Via+Marisol+Los+Angeles+CA+90042");
+
+        String address = "3961 Via Marisol, Los Angeles, CA 90042";
+
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("geo").path("0.0").query(address);
+
+        Uri loc = builder.build();
+
+        openMap(loc);
     }
 
     /**
@@ -58,7 +76,18 @@ public class MainActivity extends AppCompatActivity {
      * @param v Button that was clicked.
      */
     public void onClickShareTextButton(View v) {
-        Toast.makeText(this, "TODO: Share text when this is clicked", Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "TODO: Share text when this is clicked", Toast.LENGTH_LONG).show();
+
+        String mimeType = "text/plain";
+        String title = "Learning how to share";
+        String textToShare = "Hello there";
+
+        ShareCompat.IntentBuilder.from(this)
+                .setChooserTitle(title)
+                .setType(mimeType)
+                .setText(textToShare)
+                .startChooser();
+
     }
 
     /**
@@ -71,10 +100,7 @@ public class MainActivity extends AppCompatActivity {
      * @param v Button that was clicked.
      */
     public void createYourOwn(View v) {
-        Toast.makeText(this,
-                "TODO: Create Your Own Implicit Intent",
-                Toast.LENGTH_SHORT)
-                .show();
+        capturePhoto();
     }
 
     // TODO (1) Create a method called openWebPage that accepts a String as a parameter
@@ -85,4 +111,27 @@ public class MainActivity extends AppCompatActivity {
         // TODO (3) Create an Intent with Intent.ACTION_VIEW and the webpage Uri as parameters
 
         // TODO (4) Verify that this Intent can be launched and then call startActivity
+
+    private void openWebpage(String url){
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    public void openMap(Uri geoLocation) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+    public void capturePhoto() {
+        Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
 }

@@ -16,6 +16,7 @@
 package com.example.android.explicitintent;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     /* Fields that will store our EditText and Button */
     private EditText mNameEntry;
     private Button mDoSomethingCoolButton;
+    private String mEnteredText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
          */
         mDoSomethingCoolButton = (Button) findViewById(R.id.b_do_something_cool);
         mNameEntry = (EditText) findViewById(R.id.et_text_entry);
+
 
         /* Setting an OnClickListener allows us to do something when this button is clicked. */
         mDoSomethingCoolButton.setOnClickListener(new OnClickListener() {
@@ -59,15 +62,17 @@ public class MainActivity extends AppCompatActivity {
                  * wanted to demonstrate what parameter we were using "MainActivity.this" for as
                  * clear as possible.
                  */
+                mEnteredText = mNameEntry.getText().toString();
                 Context context = MainActivity.this;
-                String message = "Button clicked!\nTODO: Start a new Activity and pass some data.";
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(context, ChildActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, mEnteredText);
+                startActivity(intent);
             }
         });
     }
 }
 
-// TODO (1) Use Android Studio's Activity wizard to create a new Activity called ChildActivity
+// COMPLETED (1) Use Android Studio's Activity wizard to create a new Activity called ChildActivity
 
 // Do steps 2 - 5 in activity_child.xml
 // TODO (2) Change the ConstraintLayout to a FrameLayout and make appropriate adjustments
